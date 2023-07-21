@@ -1,0 +1,975 @@
+arrow_forward
+Step 1
+PROGRAM CODE:
+Main.java (code)
+import java.util.Scanner;
+public class Main {
+Â Â
+public static void main(String[]args)
+{
+Scanner sc = new Scanner(System.in);
+Roster roster = new Roster();
+int choice = 0;
+do
+{
+printMenu();
+choice = Integer.parseInt(sc.nextLine().trim());
+switch(choice)
+{
+case 1:
+{
+System.out.print("Enter student id: ");
+long id = Long.parseLong(sc.nextLine().trim());
+System.out.print("Enter first name: ");
+String firstName = sc.nextLine().trim();
+System.out.print("Enter last name: ");
+String lastName = sc.nextLine().trim();
+System.out.print("Enter gender(M/F): ");
+char gender = sc.nextLine().trim().toUpperCase().charAt(0);
+System.out.print("Enter email: ");
+String email = sc.nextLine().trim();
+if(roster.addStudent(new Student(id, firstName, lastName, gender, email)))
+System.out.println("Student with id " + id + " is added successfully.\n");
+else
+System.out.println("\nFailed to add the student.\n");
+break;
+}
+Â Â
+case 2:
+{
+System.out.print("Enter the student id: ");
+long id = Long.parseLong(sc.nextLine().trim());
+if(roster.deleteStudent(id))
+
+System.out.println("Student deleted successfully.");
+
+else
+
+System.out.println("Failed to delete student.");
+
+break;
+
+}
+
+Â Â
+
+case 3:
+
+{
+
+System.out.print("Enter the course number: ");
+
+String courseNum = sc.nextLine().trim();
+
+System.out.print("Enter the course name: ");
+
+String courseName = sc.nextLine().trim();
+
+System.out.print("Enter credits: ");
+
+int credits = Integer.parseInt(sc.nextLine().trim());
+
+System.out.print("Enter section: ");
+
+int section = Integer.parseInt(sc.nextLine().trim());
+
+Â Â
+
+Course course = new Course(courseNum, courseName, credits, section);
+
+Â Â
+
+System.out.print("Enter the id of the student: ");
+
+long id = Long.parseLong(sc.nextLine().trim());
+
+roster.addCourse(course, id);
+
+break;
+
+}
+
+Â Â
+
+case 4:
+
+{
+
+System.out.print("Enter the course number: ");
+
+String courseNum = sc.nextLine().trim();
+
+System.out.print("Enter the course name: ");
+
+String courseName = sc.nextLine().trim();
+
+System.out.print("Enter credits: ");
+
+int credits = Integer.parseInt(sc.nextLine().trim());
+
+System.out.print("Enter section: ");
+
+int section = Integer.parseInt(sc.nextLine().trim());
+
+Â Â
+
+Course course = new Course(courseNum, courseName, credits, section);
+
+Â Â
+
+System.out.print("Enter the id of the student: ");
+
+long id = Long.parseLong(sc.nextLine().trim());
+
+roster.deleteCourse(course, id);
+
+break;
+
+}
+
+Â Â
+
+case 5:
+
+{
+
+roster.printStudentDetails();
+
+break;
+
+}
+
+Â Â
+
+case 6:
+
+{
+
+System.out.println("\nThank you!\nGood Bye.\n");
+
+System.exit(0);
+
+}
+
+Â Â
+
+default:
+
+System.out.println("\nInvalid choice.\n");
+
+}
+
+System.out.println();
+
+}while(choice != 6);
+
+}
+
+Â Â
+
+private static void printMenu()
+
+{
+
+System.out.print("1. Add Student\n2. Delete Student\n3. Add Course\n4. Delete Course\n5. List all Students"
+
++ "\n6. Exit\nEnter choice: ");
+
+}
+
+}
+
+Roster.java (code)
+
+Â
+
+import java.util.LinkedList;
+
+public class Roster {
+
+Â Â
+
+private LinkedList<Student> studentsList;
+
+private int size;
+
+Â Â
+
+public Roster()
+
+{
+
+this.studentsList = new LinkedList<>();
+
+this.size = 0;
+
+}
+
+Â Â
+
+public boolean addStudent(Student student)
+
+{
+
+boolean found = false;
+
+boolean isAdded;
+
+if(isEmpty())
+
+{
+
+this.studentsList.addLast(student);
+
+this.size++;
+
+isAdded = true;
+
+}
+
+else
+
+{
+
+for(Student s : studentsList)
+
+{
+
+if(s.getIdNum() == student.getIdNum())
+
+{
+
+found = true;
+
+break;
+
+}
+
+}
+
+if(found)
+
+isAdded = false;
+
+else
+
+{
+
+this.studentsList.addLast(student);
+
+this.size++;
+
+isAdded = true;
+
+}
+
+}
+
+return isAdded;
+
+}
+
+Â Â
+
+public boolean deleteStudent(long id)
+
+{
+
+boolean found = false;
+
+int index = 0;
+
+boolean isDeleted;
+
+for(int i = 0; i < this.studentsList.size(); i++)
+
+{
+
+if(this.studentsList.get(i).getIdNum() == id)
+
+{
+
+found = true;
+
+index = i;
+
+break;
+
+}
+
+}
+
+if(!found)
+
+isDeleted = false;
+
+else
+
+{
+
+this.studentsList.remove(index);
+
+this.size--;
+
+isDeleted = true;
+
+}
+
+return isDeleted;
+
+}
+
+Â Â
+
+public int searchStudent(long id)
+
+{
+
+boolean found = false;
+
+int index = 0;
+
+for(int i = 0; i < this.studentsList.size(); i++)
+
+{
+
+if(this.studentsList.get(i).getIdNum() == id)
+
+{
+
+found = true;
+
+index = i;
+
+break;
+
+}
+
+}
+
+if(!found)
+
+return -1;
+
+else
+
+return index;
+
+}
+
+Â Â
+
+public boolean isEmpty(){ return this.studentsList.isEmpty();}
+
+Â Â
+
+public int listSize(){ return this.size; }
+
+Â Â
+
+public void addCourse(Course course, long id)
+
+{
+
+boolean isCoursePresent = false;
+
+boolean isStudentPresent = false;
+
+int studIndex = 0, courseIndex = 0;
+
+Â Â
+
+for(int i = 0; i < this.studentsList.size(); i++)
+
+{
+
+if(this.studentsList.get(i).getIdNum() == id)
+
+{
+
+isStudentPresent = true;
+
+studIndex = i;
+
+break;
+
+}
+
+}
+
+if(!isStudentPresent)
+
+System.out.println("Student with id " + id + " is not present.");
+
+else
+
+{
+
+Student stud = this.studentsList.get(studIndex);
+
+for(int i = 0; i < stud.getCoursesRegistered().size(); i++)
+
+{
+
+if(stud.getCoursesRegistered().get(i).getCourseNum().equals(course.getCourseNum()))
+
+{
+
+isCoursePresent = true;
+
+courseIndex = i;
+
+break;
+
+}
+
+}
+
+}
+
+Â Â
+
+if(isStudentPresent && !isCoursePresent && course.getCredits() <= 18)
+
+{
+
+this.studentsList.get(studIndex).getCoursesRegistered().add(course);
+
+System.out.println("Course with course number " + course.getCourseNum() + " is added successfully.");
+
+}
+
+else
+
+System.out.println("Failed to add the course.");
+
+}
+
+Â Â
+
+public void deleteCourse(Course course, long studId)
+
+{
+
+boolean isCoursePresent = false;
+
+boolean isStudentPresent = false;
+
+int studIndex = 0, courseIndex = 0;
+
+Â Â
+
+for(int i = 0; i < this.studentsList.size(); i++)
+
+{
+
+if(this.studentsList.get(i).getIdNum() == studId)
+
+{
+
+isStudentPresent = true;
+
+studIndex = i;
+
+break;
+
+}
+
+}
+
+if(!isStudentPresent)
+
+System.out.println("Student with id " + studId + " is not present.");
+
+else
+
+{
+
+Student stud = this.studentsList.get(studIndex);
+
+for(int i = 0; i < stud.getCoursesRegistered().size(); i++)
+
+{
+
+if(stud.getCoursesRegistered().get(i).getCourseNum().equals(course.getCourseNum()))
+
+{
+
+isCoursePresent = true;
+
+courseIndex = i;
+
+break;
+
+}
+
+}
+
+}
+
+Â Â
+
+if(isStudentPresent && isCoursePresent)
+
+{
+
+this.studentsList.get(studIndex).getCoursesRegistered().remove(courseIndex);
+
+System.out.println("Course deleted successfully.");
+
+}
+
+else
+
+System.out.println("Failed to delete the course.");
+
+}
+
+Â Â
+
+public void printStudentDetails()
+
+{
+
+if(isEmpty())
+
+System.out.println("No student registered!");
+
+else
+
+{
+
+System.out.println("\nAll Students:");
+
+for(Student student : this.studentsList)
+
+{
+
+System.out.println(student.toString() + "\n");
+
+}
+
+System.out.println();
+
+}
+
+}
+
+}
+
+Student.java (code)
+
+import java.util.ArrayList;
+
+public class Student {
+
+private long idNum;
+
+private String firstName, lastName;
+
+private char gender;
+
+private String email;
+
+private ArrayList<Course> coursesRegistered;
+
+Â Â
+
+public Student()
+
+{
+
+this.idNum = 0;
+
+this.firstName = "";
+
+this.lastName = "";
+
+this.gender = 0;
+
+this.email = "";
+
+this.coursesRegistered = null;
+
+}
+
+public Student(long idNum, String firstName, String lastName, char gender, String email) {
+
+this.idNum = idNum;
+
+this.firstName = firstName;
+
+this.lastName = lastName;
+
+this.gender = gender;
+
+this.email = email;
+
+this.coursesRegistered = new ArrayList<>();
+
+}
+
+public long getIdNum() {
+
+return idNum;
+
+}
+
+public void setIdNum(long idNum) {
+
+this.idNum = idNum;
+
+}
+
+public String getFirstName() {
+
+return firstName;
+
+}
+
+public void setFirstName(String firstName) {
+
+this.firstName = firstName;
+
+}
+
+public String getLastName() {
+
+return lastName;
+
+}
+
+public void setLastName(String lastName) {
+
+this.lastName = lastName;
+
+}
+
+public char getGender() {
+
+return gender;
+
+}
+
+public void setGender(char gender) {
+
+this.gender = gender;
+
+}
+
+public String getEmail() {
+
+return email;
+
+}
+
+public void setEmail(String email) {
+
+this.email = email;
+
+}
+
+public ArrayList<Course> getCoursesRegistered() {
+
+return coursesRegistered;
+
+}
+
+Â Â
+
+public void printCoursesRegistered()
+
+{
+
+if(this.coursesRegistered.isEmpty())
+
+System.out.println("No courses are rgistered till now!");
+
+else
+
+{
+
+System.out.println("Registered Courses:");
+
+for(Course course : this.coursesRegistered)
+
+{
+
+System.out.println(course.toString());
+
+}
+
+System.out.println();
+
+}
+
+}
+
+@Override
+
+public int hashCode() {
+
+int hash = 5;
+
+return hash;
+
+}
+
+@Override
+
+public boolean equals(Object obj) {
+
+if (this == obj) {
+
+return true;
+
+}
+
+if (obj == null) {
+
+return false;
+
+}
+
+if (getClass() != obj.getClass()) {
+
+return false;
+
+}
+
+final Student other = (Student) obj;
+
+if (this.idNum != other.idNum) {
+
+return false;
+
+}
+
+return true;
+
+}
+
+Â Â
+
+@Override
+
+public String toString()
+
+{
+
+String res = "Student ID: " + getIdNum() + ", Name: " + getFirstName() + " " + getLastName()
+
++ ", Gender: " + getGender() + ", Email: " + getEmail() + "\n";
+
+Â Â
+
+if(this.coursesRegistered.isEmpty())
+
+res += "No courses are rgistered till now!";
+
+else
+
+{
+
+res += "Registered Courses:\n";
+
+for(Course course : this.coursesRegistered)
+
+{
+
+res += course.toString() + "\n";
+
+}
+
+res += "\n";
+
+}
+
+return res;
+
+}
+
+}
+
+Â
+
+Course.java (code)
+
+import java.util.Objects;
+
+public class Course {
+
+private String courseNum, courseName;
+
+private int credits, section;
+
+Â Â
+
+public Course()
+
+{
+
+this.courseNum = "";
+
+this.courseName = "";;
+
+this.credits = 0;
+
+this.section = 0;
+
+}
+
+public Course(String courseNum, String courseName, int credits, int section) {
+
+this.courseNum = courseNum;
+
+this.courseName = courseName;
+
+this.credits = credits;
+
+this.section = section;
+
+}
+
+public String getCourseNum() {
+
+return courseNum;
+
+}
+
+public void setCourseNum(String courseNum) {
+
+this.courseNum = courseNum;
+
+}
+
+public String getCourseName() {
+
+return courseName;
+
+}
+
+public void setCourseName(String courseName) {
+
+this.courseName = courseName;
+
+}
+
+public int getCredits() {
+
+return credits;
+
+}
+
+public void setCredits(int credits) {
+
+this.credits = credits;
+
+}
+
+public int getSection() {
+
+return section;
+
+}
+
+public void setSection(int section) {
+
+this.section = section;
+
+}
+
+@Override
+
+public int hashCode() {
+
+int hash = 5;
+
+return hash;
+
+}
+
+@Override
+
+public boolean equals(Object obj) {
+
+if (this == obj) {
+
+return true;
+
+}
+
+if (obj == null) {
+
+return false;
+
+}
+
+if (getClass() != obj.getClass()) {
+
+return false;
+
+}
+
+final Course other = (Course) obj;
+
+if (this.credits != other.credits) {
+
+return false;
+
+}
+
+if (this.section != other.section) {
+
+return false;
+
+}
+
+if (!Objects.equals(this.courseNum, other.courseNum)) {
+
+return false;
+
+}
+
+if (!Objects.equals(this.courseName, other.courseName)) {
+
+return false;
+
+}
+
+return true;
+
+}
+
+Â Â
+
+@Override
+
+public String toString()
+
+{
+
+return ("Course Number: " + getCourseNum() + ", Course Name: " + getCourseName()
+
++ ", Credits: " + getCredits() + ", Section: " + getSection());
+
+}
+
+}
+
+arrow_forward
+
+Step 2
+
+OUTPUT:
+
+42\nD\nrun:\n1. Add Student\n2. Delete Student\n3. Add Course\n4. Delete Course\n5. List all Students\n6. Exit\nEnter choice: 1\nEnter
+
+4403\nD\n2. Delete Student\n3. Add Course\n4. Delete Course\n5. List all Students\n6. Exit\nEnter choice: 3\nEnter the course number:
+
+D\n▷▷\nor\n5. List all Students\n6. Exit\nEnter choice: 3\nEnter the course number: HU601\nEnter the course name: Humanities\nEnter c
+
+88\nEnter choice: 5\nAll Students:\nStudent ID: 234, Name: Alice Stuart, Gender: F, Email: alices@hotmail.com\nRegistered Courses
+
+▷▷\nD\nStudent deleted successfully.\n1. Add Student\n2. Delete Student\n3. Add Course\n4. Delete Course\n5. List all Students\n6. Ex
+
